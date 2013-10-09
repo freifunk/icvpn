@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# post-merge hook für Debian um tinc zu reloaden
+#
+# 1. nach .git/hooks kopieren
+# 2. git pull -q ausführen zum testen
+# 3. cronjob erstellen, der git pull -q im richtigen
+#    Verzeichnis ausführt
+
+/etc/init.d/tinc reload icvpn
