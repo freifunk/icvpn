@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+#==========================================================================
+#  This program is free software; you can redistribute it and/or modify 
+#  it under the terms of the GNU General Public License as published by 
+#  the Free Software Foundation; either version 2 of the License, or    
+#  (at your option) any later version.                                  
+#==========================================================================
+#
+set -ix
+# HOW TO USE
+# * Check out the icvpn svn tree to the place where $SVN_DIR points to.
+#   You can do this by running:
+#   mkdir -p /mnt/data
+#   svn co https://kdserv.dyndns.org/svn/christof-icvpn icvpn
+#   Use "freifunk" as username as well as password.
+# * create a /etc/gentinc.cfg file with the following content (remove 
+#   the # signs in the beginning of each line containing a variable) 
+#   and adapt the paths to your system:
+#	# ====== START OF gentinc.cfg ======
+#	# this points to the directory where you checked out the svn tree.
+# 	SVN_DIR="/mnt/data/icvpn"
+# 	TMP="/tmp"
+# 	TINC_DIR="/etc/tinc/icvpn"
+# 	TINC_INIT="/etc/init.d/tinc"
+# 	SVN="/usr/bin/svn"
+# 	LOCKDIR="/var/run/gentinccfg"
+#	SVN_USERNAME=freifunk
+#	SVN_PASSWORD=freifunk
+#	# ====== END OF gentinc.cfg =========
+# * make /etc/gentinc.cfg world readable
+# * run the script from cron on a daily basis
+
+! [[ -f /etc/gentinc.cfg ]] && {
+	echo "config file does not exist in /etc/gentinc.cfg"
+	exit 1
+}
+. /etc/gentinc.cfg
+cleanup() {
+	local exitcode
+	local i
+	exitcode=$1
+	for ((i=0;i<${#TMPFILES[@]};i++))
+	do
+		rm -f ${TMPFILES[i]}
+	done
+	[[ ! $exitcode -eq 0 ]] && 
+		echo "aborted due to error" >&2
+	trap - 1 2 3 6 9 13 14 15
+	rm -f "${LOCKDIR}/PID"
+	rm -rf "${LOCKDIR}"
+	exit ${exitcode:-1}
+}
+
+# obtain lock
+lcount=0
+while ! ( $(mkdir ${LOCKDIR} 2>/dev/null) ) 
+do
+	echo there is already an instance of $0 running as PID: $(cat "${LOCKDIR}/PID" 2>/dev/null)
+	sleep 1
+   ((lcount+=1))
+    if [[ $lcount -gt 4000 ]]
+    then
+      echo unable to obtain lock
+      exit 1
+    fi  
+done
+trap 'cleanup 1' 1 2 3 6 9 13 14 15
+
+# lock obtained
+echo $$ > "${LOCKDIR}/PID"
+
+# make sure we do not overload svn server when running the script from cron
+if [[ $1 != "--nocron" ]]
+then
+	sleep $((RANDOM%3600))
+fi
+
+# create new tinc config
+cd "$SVN_DIR"
+$SVN up --no-auth-cache --username $SVN_USERNAME --password $SVN_PASSWORD >/dev/null
+if [[ $? -gt 0 ]]
+then
+	echo svn update failed - no reload necessary >&2
+	cleanup 2
+fi
+footer=$(mktemp "$TMP/tinc_footer.XXXXXX")
+TMPFILES[${#TMPFILES[@]}]="$footer"
+header=$(mktemp "$TMP/tinc_footer.XXXXXX")
+TMPFILES[${#TMPFILES[@]}]="$header"
+
+for i in ${SVN_DIR}/hosts/*
+do
+	echo "ConnectTo = $(basename $i)" >> "$footer"
+done
+
+grep -v "ConnectTo" "$TINC_DIR/tinc.conf" > "$header"
+cat $header $footer >"$TINC_DIR/tinc.conf"
+
+# exit
+$TINC_INIT reload >/dev/null
+
+cleanup 0
+

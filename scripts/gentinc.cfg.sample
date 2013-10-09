@@ -1,0 +1,8 @@
+SVN_DIR="/mnt/data/freifunk-icvpn"
+TMP="/tmp"
+TINC_DIR="/etc/tinc/icvpn"
+TINC_INIT="/etc/init.d/tinc"
+SVN="/usr/bin/svn"
+LOCKDIR="/var/run/gentinccfg"
+SVN_USERNAME=freifunk
+SVN_PASSWORD=freifunk

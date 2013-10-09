@@ -1,0 +1,73 @@
+#!/bin/ash
+#
+#
+#==========================================================================
+#  This program is free software; you can redistribute it and/or modify 
+#  it under the terms of the GNU General Public License as published by 
+#  the Free Software Foundation; either version 2 of the License, or    
+#  (at your option) any later version.                                  
+#==========================================================================
+#
+# this script collects all mdns names and converts them to a file in /etc/hosts style
+# This file can then be fed to a regular dns server
+#
+# This file should be executed frequently via cron
+
+FILENAME=/tmp/mdns_hosts
+TMP="/tmp"
+
+# resolve the name chunksize hosts at the same time.
+chunksize=15
+scriptname=$(basename $0)
+
+# where should the lockfile be kept?
+LOCKDIR="$TMP/$scriptname"
+
+# use this executable to resolve a host that was announced via mdns
+RESOLVER="/usr/bin/avahi-resolve-host-name"
+
+# set to -6 if you want to resolve IPv6 address
+# -4 otherwise
+RESOLVER_ARGS="-4"
+
+# Path to xargs
+XARGS="/usr/bin/xargs"
+
+cleanup() 
+{
+  local exitcode
+  local i
+  exitcode=$1
+    rm -f ${host_tmp}
+  if [ ! $exitcode -eq 0 ]
+  then
+    echo "aborted due to error" >&2
+  fi
+  trap - 1 2 3 6 9 13 14 15
+  rm -f "${LOCKDIR}/PID"
+  rm -rf "${LOCKDIR}"
+  exit ${exitcode:-1}
+}
+
+trap 'cleanup 1' 1 2 3 6 9 13 14 15
+# obtain lock
+while ! ( $(mkdir ${LOCKDIR} 2>/dev/null) ) 
+do
+  echo there is already an instance of $(basename $0) running as PID: $(cat "${LOCKDIR}/PID" 2>/dev/null)
+  sleep 1
+done
+
+# lock obtained
+echo $$ > "${LOCKDIR}/PID"
+
+host_tmp=$(mktemp ${TMP}/$scriptname.XXXXXX)
+
+hostnames=$(avahi-browse -t -p _workstation._tcp|cut -d\; -f4|cut -d\\ -f1|sort -u|awk '{print $1 ".local"}')
+
+echo $hostnames | $XARGS -n $chunksize $RESOLVER $RESOLVER_ARGS 2>/dev/null |awk '{print $2 "  " $1}' >"${host_tmp}"
+
+mv "${host_tmp}" "${FILENAME}"
+killall -SIGHUP dnsmasq
+
+cleanup 0 
+
