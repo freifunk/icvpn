@@ -1,4 +1,9 @@
-address = ping01.stura.uni-weimar.de
+address = vpn2.weimarnetz.de
 -----BEGIN RSA PUBLIC KEY-----
-to-be-done...
+MIIBCgKCAQEA3fPb1CWkdbKcL1Cl+klgKYV7hLJppEg2pU0Sm2/jTp0yIFmhfSYx
+GGTIbJnlZD04AKVxeJY11F5KwWpOaef88zRtZAqLs6VtsWXpKrPe5hM2Wc4phAJC
+5xOgvzvyPtFlf7oLt8Es+owbiNuf+ZavtIKLjhkDK5BwBiYGTgV+d184WJKSxbUx
+2RpP7vUpK58xVhMi/nAZBxnG2OkDAxReaq0iB208SlsiLUfxSvTUpI/BqP0HIezK
+pO49Kdq191PH+TWhdDh9IsEFUIEyX5rS5S+fR3P07k5XImPke3771qt1oHnSPSvq
+2bsBp9PWLecIBtnZxwsbRvd65vRL+Pg71QIDAQAB
 -----END RSA PUBLIC KEY-----
