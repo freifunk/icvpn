@@ -1,0 +1,11 @@
+Address = icvpn.peering.nazco.de
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAraSehzFjItZ9O4pznXVLvockuOfX5iWThBEAHV1N0sU1HeH/Crxc
+hwOI3CREsH4AcHw4mZHpStDYOAg4fwnqE98Ed9Rxe70IFsfTLZlOcuTat9ryMgio
+fepw8mVbGxt++1Lxz2oBZDXC142kgR0huk9kIbHqISQQhrAfXe78yAHWw/WMWo7+
+czOexkkydpLCtTLUoKC3ntCfqkDnxazK2tvrhFyMV5Y5GaUiNKVuxdXoHz1KBNCc
+lOyfZA+ZCPVHvu/HVc/kZIzUJvpdrJgfh8Z9HUwDM1m3zKlKV+1m3cT7CMxPe+kH
+mzfxsFJGf9cuahW/ifmKIulyjSzFKM2SvQIDAQAB
+-----END RSA PUBLIC KEY-----
