@@ -1,0 +1,11 @@
+Address = gw1.ostholstein.freifunk.net
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAoWCQbASGuIfvD/i2jzm2uudqYcZ8Fc/l75RIYSdk/rujVTlN98J/
+p+abYXHqkfmCejjOEjnFsLgUFtl58CagazUDAYHGZjsia0hb9pxG0gd8z1Evyuus
+Hbrw1ZgJxsFWfsFB+QhdhlEiECBB43aI+ZFTu97rqMyK+43On07jAw5wTe5Y1lJ1
+DZYIubdcr4JLXKh+oQTT6BJwgkxZhciHbtJoddEUmLsqdIMNapWWswPljQ8KywUx
+y8TwIAGmvJT1M/vAQg6g4rHlTICZOvahNz95avZwwpOUCOjO9FY8flZpy7g85aXp
+wZSN0aaYd1GYbaQxYWzyTYZZT+WxGSWuZQIDAQAB
+-----END RSA PUBLIC KEY-----
