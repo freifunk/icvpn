@@ -4,54 +4,27 @@
 #
 # 1. copy to .git/hooks
 # 2. to test run "git pull -q"
-# 3. create cronjob, which runs "git pull -q" in your ${icvpn} dir
+# 3. create cronjob running "git pull -q -C /etc/tinc/icvpn/"
 #
 
-icvpndir=/etc/tinc/icvpn/
-tinccfg=tinc.conf
-export icvpndir tinccfg
-
-PATH="/sbin:/bin:/usr/sbin:/usr/bin"
-tmpfile=$(mktemp)
-export PATH tmpfile
-
-# get changed files
-changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
-
-# run $2 if $1 matches changed files
-check_run() {
-	echo "$changed_files" | grep --quiet "$1" && eval "$2"
+fail() {
+  echo "$1" >&2
+  exit 1
 }
 
-# generate ${tinccfg}
-gen_conf() {
-	test -w ${icvpndir}/${tinccfg} || \
-		{ echo "ERR: ${tinccfg} (${icvpndir}/${tinccfg}) is not writeable, exiting." >&2; exit 1; }
+BASE=$(git rev-parse --show-toplevel)
+TINCCFG=$BASE/tinc.conf
+test -w $TINCCFG || fail "ERR: $TINCCFG is not writeable"
 
-	# remove all ConnectTo Statements
-	grep -v 'ConnectTo' ${icvpndir}/${tinccfg} > ${tmpfile}
-	# add ConnectTo Statements for all hosts
-	for host in ${icvpndir}/hosts/[a-zA-Z]*; do
-		echo "ConnectTo = ${host##*/}" >> ${tmpfile}
-	done
+sed -i '/^ConnectTo/d' $TINCCFG
 
-	test -s ${tmpfile} || \
-		{ echo "ERR: generated config was empty, zeh sky is falling, exiting." >&2; exit 2; }
+for HOST in hosts/*; do
+  # skip hosts without address
+  grep -q '^Address' -- "$HOST" || continue
 
-	num_connectto=$(grep -s ConnectTo ${tmpfile} | wc -l)
-	[ ${num_connectto} -gt 20 ] || \
-		{ echo "ERR: generated config has ${num_connectto} <= 20 ConnectTo lines, safety 1st, exiting." >&2; exit 30; }
-	num_all=$(cat ${tmpfile} | wc -l)
-	[ ${num_all} -gt 25 ] || \
-		{ echo "ERR: generated config has ${num_all} <= 25 lines, safety 1st, exiting." >&2; exit 31; }
+  echo "ConnectTo = ${HOST##*/}" >> $TINCCFG
+done
 
-	cp -f ${icvpndir}/${tinccfg} ${icvpndir}/${tinccfg}.old
-	cat ${tmpfile} > ${icvpndir}/${tinccfg}
+invoke-rc.d tinc reload icvpn
 
-	invoke-rc.d tinc reload icvpn
-}
-
-check_run hosts/[a-zA-Z] gen_conf
-
-rm -f ${tmpfile}
 exit 0
