@@ -1,10 +1,30 @@
 #!/bin/bash
 
-# post-merge hook für Debian um tinc zu reloaden
+# post-merge hook for Debian systems
 #
-# 1. nach .git/hooks kopieren
-# 2. git pull -q ausführen zum testen
-# 3. cronjob erstellen, der git pull -q im richtigen
-#    Verzeichnis ausführt
+# 1. copy to .git/hooks
+# 2. to test run ".git/hooks/post-merge"
+# 3. create cronjob running "git pull -q -C /etc/tinc/icvpn/"
+#
 
-/etc/init.d/tinc reload icvpn
+fail() {
+  echo "$1" >&2
+  exit 1
+}
+
+BASE=$(git rev-parse --show-toplevel)
+TINCCFG=$BASE/tinc.conf
+test -w $TINCCFG || fail "ERR: $TINCCFG is not writeable"
+
+sed -i '/^ConnectTo/d' $TINCCFG
+
+for HOST in hosts/*; do
+  # skip hosts without address
+  grep -q '^Address' -- "$HOST" || continue
+
+  echo "ConnectTo = ${HOST##*/}" >> $TINCCFG
+done
+
+invoke-rc.d tinc reload icvpn
+
+exit 0
