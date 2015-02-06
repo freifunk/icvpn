@@ -56,8 +56,6 @@ def get_hosts_data(srcdir):
 
                     chunks = line.split("=")
                     if len(chunks) == 2:
-                        import pdb
-                        # pdb.set_trace()
                         (k, v) = (x.strip().lower() for x in chunks)
 
                         if k == "port":
