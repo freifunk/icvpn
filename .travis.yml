@@ -1,0 +1,5 @@
+language: python
+python: "3.4"
+
+before_install: sudo apt-get install iputils-ping
+script: scripts/check -s ./hosts/

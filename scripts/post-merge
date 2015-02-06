@@ -3,7 +3,7 @@
 # post-merge hook for Debian systems
 #
 # 1. copy to .git/hooks
-# 2. to test run "git pull -q"
+# 2. to test run ".git/hooks/post-merge"
 # 3. create cronjob running "git pull -q -C /etc/tinc/icvpn/"
 #
 
