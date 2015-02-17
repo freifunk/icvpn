@@ -4,6 +4,7 @@ import sys
 import os
 import socket
 import subprocess
+import nmap
 from optparse import OptionParser
 
 
@@ -14,12 +15,15 @@ def error(*arg):
 def check_host_lookup(hostname, port):
     try:
         return socket.getaddrinfo(hostname, port)
-    except Exception as e:
+    except Exception:
         error("DNS Lookup for {hostname} failed".format(hostname=hostname))
         return []
 
 
-def check_reachability(host, family):
+def check_icmp_reachability(gai_record):
+    host = gai_record[4][0]
+    family = gai_record[0]
+
     if family is socket.AddressFamily.AF_INET:
         process_name = 'ping'
     else:
@@ -28,8 +32,27 @@ def check_reachability(host, family):
                              stdout=subprocess.PIPE)
     child.communicate()
     if child.returncode:
-        error("Host {host} is unreachable".format(host=host))
-    return 0 if child.returncode == 0 else 1
+        error("  - {host} is icmp unreachable".format(host=host))
+    return True if child.returncode == 0 else False
+
+
+def check_udp_reachability(gai_record):
+    host, port = gai_record[4][:2]
+    family = gai_record[0]
+
+    if family is socket.AddressFamily.AF_INET:
+        arguments = '-sU -PN'
+    else:
+        arguments = '-sU -PN -6'
+
+    scanner = nmap.PortScanner()
+    result = scanner.scan(host, str(port), arguments)  # -sU requires root
+    state = result['scan'][host]['udp'][port]['state']
+
+    if state == 'closed':
+        print("  - {host} port {port}/udp is {state}"
+              .format(host=host, port=port, state=state))
+    return False if state == 'closed' else True
 
 
 def get_hosts_data(srcdir):
@@ -104,11 +127,16 @@ def do_checks(srcdir):
             else:
                 for record in records:
                     if record[1] is not socket.SocketType.SOCK_DGRAM:
-                        # we get SOCK_STREAM, SOCK_DGRAM and SOCK_RAW
-                        # for every IP/Port pair, lets just pick one
-                        # to have unique ip addresses
+                        # vpn connections are udp based, so skip
+                        # everything else
                         continue
-                    errcnt += check_reachability(record[4][0], record[0])
+
+                    if not check_icmp_reachability(record):
+                        errcnt += 1
+                    else:
+                        port_state = check_udp_reachability(record)
+                        if not port_state:
+                            errcnt += 1
 
     print("{errcnt} errors".format(errcnt=errcnt))
 
