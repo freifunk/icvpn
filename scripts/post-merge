@@ -25,6 +25,6 @@ for HOST in hosts/*; do
   echo "ConnectTo = ${HOST##*/}" >> $TINCCFG
 done
 
-invoke-rc.d tinc reload icvpn
+/usr/sbin/invoke-rc.d tinc reload icvpn
 
 exit 0
