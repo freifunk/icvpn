@@ -1,5 +1,5 @@
-Address = vpn3.fffranken.de
-Port = 657
+# Address = vpn3.fffranken.de
+# Port = 657
 -----BEGIN RSA PUBLIC KEY-----
 MIGJAoGBAPIkkqmdnJi3Y+cGKslf0t+swE+7rtfRQTStW29MP62L6Sn0lxb5MufU
 LRtR0UW31SWQ03HGuUe51e16ppxZ3V1AFQvoLAwxwDD6VvBk4n+XEiupWPt+0XSd

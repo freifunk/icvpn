@@ -1,5 +1,5 @@
-Address = fastd3.kbu.freifunk.net
-Port = 656
+# Address = fastd3.kbu.freifunk.net
+# Port = 656
 
 -----BEGIN RSA PUBLIC KEY-----
 MIICCgKCAgEAwzH7Z0W0yIDp80G8sHpaxez7GXL3Lql7DAdJkrNf6KEzZAsZ7usn
