@@ -20,7 +20,7 @@ sed -i '/^ConnectTo/d' $TINCCFG
 
 for HOST in hosts/*; do
   # skip hosts without address
-  grep -q '^Address' -- "$HOST" || continue
+  grep -iq '^Address' -- "$HOST" || continue
 
   echo "ConnectTo = ${HOST##*/}" >> $TINCCFG
 done
