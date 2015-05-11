@@ -7,6 +7,8 @@
 # 3. create cronjob running "git pull -q -C /etc/tinc/icvpn/"
 #
 
+PATH=/usr/sbin:$PATH
+
 fail() {
   echo "$1" >&2
   exit 1
@@ -25,6 +27,11 @@ while read HOST; do
   echo "ConnectTo = $HOST" >> $TINCCFG
 done < metanodes
 
-/usr/sbin/invoke-rc.d tinc reload icvpn
+if hash tinc; then
+    # prefer the command line interface that comes with tinc1.1 if it exists
+    tinc -n icvpn reload
+else
+    invoke-rc.d tinc reload icvpn
+fi
 
 exit 0
