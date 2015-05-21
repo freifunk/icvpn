@@ -1,0 +1,12 @@
+Address = vpn6.freifunk-bielefeld.de
+Port = 655
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAwzVXJJ1/BjwV4SgXxfCJ1xpYp7mrioNBbCk9ea+J5oZs79GM3Jqo
+BHuW8QxL/x75OskFAHAlVrlLGZzoE6RtlvzIqiKesVcOuSskyt0E7r+wqltSxu4N
+tbyDRVUOkAHTwQ0zEPMPy1HJhD8SmA3m4oHPjGYdAAQztrKB2CSnP/2P29lxllLr
+OPcQt6/UN1/OcbuzHnrPSOFGxyb4Ir2FRWxiCRGjqI3QQ/ci2wfEnKsqaG/OH5nr
+gojUGkx6XT9L5Rp5cP+Xdiwr+k7J6Snnx7ZEdpdVW43sfzjJinrR1Kp4w+NgE3XS
+FFevHmSj5pMO+YHYucDKepreqSgHqwexvQIDAQAB
+-----END RSA PUBLIC KEY-----
+
