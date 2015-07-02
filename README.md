@@ -30,7 +30,7 @@ Hint: In version 1.1 this option was moved to the tinc binary and is called <cod
 ### Execute post-merge hook
 This step is necessary to populate your new configuration with infos about the metanodes.
 
-    # ./git/hooks/post-merge
+    # ./.git/hooks/post-merge
 
 ### Set up a cronjob to update the repository in regular intervals.
 
