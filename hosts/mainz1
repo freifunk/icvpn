@@ -1,11 +1,10 @@
-Address = gate2.freifunk-mainz.de
-Port = 656
+Address = ic-mainz1.freifunk-mainz.de
+Port = 10655
 -----BEGIN RSA PUBLIC KEY-----
-MIIBCgKCAQEAufGn5fV5dXxyQ75F1SARYxe3/7dDgcAsLp2IB8hXlQ6GGw/viYhF
-vMR66Xg/sy1IcJspwxYQ8KWTC0062rpZlQ0c6kR77LlVXLQgjAF+tPUAbmxt4/tL
-zl3NDOyF7nyiGQ6Ws+MwV7jMMYEO80flhZtiqNM10PS3RBg8D3M33r52NHvxrHvB
-ytPZuKzBcyVwy4aE2MkJtyrfmH+yivy6OOo/1JkXJhUGYnjRT3ETcA+J4GCymX6b
-BlUNKKWjEZ+pxtRPLjNekId9wMfAtKZ8cr5yWUC+L6LbUPCQRCFyjnkHraifU09B
-8dHfDokJpcmVEU/VlU/sxGwqGp2khqteOwIDAQAB
+MIIBCgKCAQEA1M84cHK5ok4qCghUrmtSRHv5EvzMV4XypivUv5b4wac3stusEhc0
+Wj3PgWrQjQMHjQWnOii/EcMUvRXD6pT3jZCGBOd/BHFherlmJUV8TgSjvABIbzmJ
+vAyfICn6brdYVf6D+eJwQ43I2e/7hbB80Y6e0zbBo4hvc2AuiI8ipof61kdJZden
+/F3+hq904rgX17P1bvJFtJcO80bNeYj0xl2LcribCZaMIjlDnHV883Pg/+rqrV7v
+rBKfPlNHuA6ewYGPyKVadkyJuMsw1M4dY/Go2cPupQyBeybulj+43c1QZwXdg/z5
+za/FIE1bG3DiJS0EmPPZkrejZz7VLimXyQIDAQAB
 -----END RSA PUBLIC KEY-----
-
