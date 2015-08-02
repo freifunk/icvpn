@@ -128,7 +128,7 @@ def get_hosts_data(srcdir):
                                     error("non-integer port given")
                             else:
                                 addresses.append((v, None))
-                        elif k in ('ecdsapublickey'):
+                        elif k in ('ecdsapublickey', 'ed25519publickey'):
                             continue
                         else:
                             error("unknown key {key} with value {val}"
