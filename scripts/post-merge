@@ -27,7 +27,7 @@ while read HOST; do
   echo "ConnectTo = $HOST" >> $TINCCFG
 done < metanodes
 
-if hash tinc; 2>/dev/null then
+if hash tinc 2>/dev/null; then
     # prefer the command line interface that comes with tinc1.1 if it exists
     tinc -n icvpn reload
 else
