@@ -1,3 +1,6 @@
+# as determined from `tinc -n icvpn info monitoringmoehne` ;)
+Address = 188.165.145.158
+Port = 656
 
 -----BEGIN RSA PUBLIC KEY-----
 MIICCgKCAgEApOhvm7ohievOIunqK7L2zb1Y40msF65qvwRzLr58x9byIp3pw7Ay
