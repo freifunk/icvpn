@@ -47,7 +47,7 @@ def check_icmp_reachability(gai_record):
         process_name = 'ping'
     else:
         process_name = 'ping6'
-    child = subprocess.Popen([process_name, host, '-c', '1', '-W', '5'],
+    child = subprocess.Popen([process_name, host, '-i', '0.2', '-c', '4', '-W', '5'],
                              stdout=subprocess.PIPE)
     child.communicate()
     if child.returncode:
