@@ -60,7 +60,7 @@ Criteria for the selection of meta nodes are:
 2. community diversity
 3. ample resources (cpu, memory, traffic)
 
-When data needs to be transferd between two nodes, this will happen indepently of those meta nodes. Through the shared
+When data needs to be transfered between two nodes, this will happen independently of those meta nodes. Through the shared
 network graph a direct transfer is possible and will be tried: at first via UDP, then via TCP, then indirectly. While
 indirect routing is possible the meta nodes are not required to provide forwarding for those packets.
 
