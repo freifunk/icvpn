@@ -5,10 +5,9 @@ import os
 import socket
 import subprocess
 import nmap
+import concurrent.futures
 from optparse import OptionParser
-
-ip4, ip6 = 0, 0
-
+from functools import reduce
 
 ANSI_COLOR_ERR = "\x1b[31m"
 ANSI_COLOR_WARN = "\x1b[33m"
@@ -16,19 +15,22 @@ ANSI_COLOR_OK = "\x1b[32m"
 ANSI_COLOR_RESET = "\x1b[0m"
 
 
-def error(*arg):
-    print(ANSI_COLOR_ERR, *arg, file=sys.stderr,
-          end='%s\n' % ANSI_COLOR_RESET)
+def error(arg):
+    printToResult(ANSI_COLOR_ERR + " " + arg)
 
 
-def warn(*arg):
-    print(ANSI_COLOR_WARN, *arg, file=sys.stderr,
-          end='%s\n' % ANSI_COLOR_RESET)
+def warn(arg):
+    printToResult(ANSI_COLOR_WARN + " " + arg)
 
 
-def ok(*arg):
-    print(ANSI_COLOR_OK, *arg, file=sys.stderr,
-          end='%s\n' % ANSI_COLOR_RESET)
+def ok(arg):
+    printToResult(ANSI_COLOR_OK + " " + arg)
+
+
+def printToResult(arg):
+    global output
+    output += str(arg)
+    output += '%s\n' % ANSI_COLOR_RESET
 
 
 def check_host_lookup(hostname, port):
@@ -143,44 +145,58 @@ def get_hosts_data(srcdir):
                 yield(dict(community=fname, addresses=addresses))
 
 
-def do_checks(srcdir):
-    global ip4, ip6
+def do_checks_host(host):
+    global ip4, ip6, output
 
     errcnt = 0
     warncnt = 0
+    ip4 = 0
+    ip6 = 0
+    output = ""
 
-    for host in get_hosts_data(srcdir):
-        print("Checking {community}".format(community=host['community']))
-        if not host['addresses']:
-            warn("no addresses specified")
-            warncnt += 1
-        for address in host['addresses']:
-            host, port = address
+    printToResult("Checking {community}".format(community=host['community']))
+    if not host['addresses']:
+        warn("no addresses specified")
+        warncnt += 1
+    for address in host['addresses']:
+        host, port = address
 
-            # dns lookup
-            records = check_host_lookup(host, port)
-            if not records:
-                errcnt += 1
-            else:
-                for record in records:
-                    if record[1] is not socket.SOCK_DGRAM:
-                        # vpn connections are udp based, so skip
-                        # everything else
-                        continue
+        # dns lookup
+        records = check_host_lookup(host, port)
+        if not records:
+            errcnt += 1
+        else:
+            for record in records:
+                if record[1] is not socket.SOCK_DGRAM:
+                    # vpn connections are udp based, so skip
+                    # everything else
+                    continue
 
-                    if not check_icmp_reachability(record):
+                if not check_icmp_reachability(record):
+                    errcnt += 1
+                else:
+                    port_state = check_udp_reachability(record)
+                    if not port_state:
                         errcnt += 1
-                    else:
-                        port_state = check_udp_reachability(record)
-                        if not port_state:
-                            errcnt += 1
 
-    print("\nfound {}/{} working ipv4/ipv6 peers".format(ip4, ip6))
+    return (errcnt, warncnt, ip4, ip6, output)
 
-    error("{} errors".format(errcnt))
-    warn("{} warnings".format(warncnt))
 
-    return 0 if errcnt == 0 else 1
+def do_reduce_results(a, b):
+    print (a[4], end="")
+    print (b[4], end="")
+    return (a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3], "")
+
+
+def do_checks(srcdir):
+    with concurrent.futures.ProcessPoolExecutor(max_workers=200) as executor:
+        results = executor.map(do_checks_host, get_hosts_data(srcdir))
+        result = reduce(do_reduce_results, results)
+
+        print("\nfound {}/{} working ipv4/ipv6 peers".format(result[2], result[3]))
+        print("{}{} errors{}".format(ANSI_COLOR_ERR, result[0], ANSI_COLOR_RESET))
+        print("{}{} warnings{}".format(ANSI_COLOR_WARN, result[1], ANSI_COLOR_RESET))
+        return 0 if result[0] == 0 else 1
 
 
 if __name__ == "__main__":
