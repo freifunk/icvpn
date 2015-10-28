@@ -1,4 +1,4 @@
-ddress = ns4.freiburg.freifunk.net
+address = ns4.freiburg.freifunk.net
 Port = 10656
 
 -----BEGIN RSA PUBLIC KEY-----
