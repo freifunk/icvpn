@@ -1,0 +1,11 @@
+Address = vpn2.ffnord.net
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEA6oqMtiebk0irDQ31jCKCebDTEyMCdCj1GAKIvrdcSiHd+jLtBbfS
++7qLIQHFuZsVEcWcspU6zAW3Mhbpwqjxs1RlGzFgL7joJWOaCH5qrJF9UvR1SuQV
+ffttK9nN5pllyQDvIu6bqmgK+mQoNxpyppY8MloNqVOed3D1tpMvm53jje2cqvJY
+xPwmSa4wc1M4yAcHt8CdIt+qx5Gwm7iovSJMm4UIT4QmmNemjxsPJLAC6XdXtCir
+RHKP7DLvxmGO1XAtqa5SxybxEkcfGtDlJ+OZ9he0Nm1QdWwMYL1ODB+/WeuIYgKU
+jGA8XFyirv5zA6zjJZItNZfBTO1FENP5ewIDAQAB
+-----END RSA PUBLIC KEY-----
