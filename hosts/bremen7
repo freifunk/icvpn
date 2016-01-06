@@ -1,0 +1,11 @@
+Address = vpn07.bremen.freifunk.net
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEA6ipNQMI8blkg9uc8fQug6Q/rYPvb+bwqb+sNdN0Vv1T/mfGC0Tvc
+R/MRjWuw20VIfeDbqA8r2LFftH6MtWh9KQ3ukoHF0ulVrdPOasMApLmUwJs4I262
+ljb0q8oCvnlmKhTskA48s2h2xwd4FR4KfPDeLDCGvIyLIR1agAVm/c6uwBljYrUW
+CUrbz2+ZvPHKTZ7uYFP2eSpVDcJbZYIik6Xu1I4448lWoh1TQ4bMOKDoSm57yBQa
+kb90wLaGWyAvRisJjx5VRnRC3MPABUuqsoiE/rP3/ZiPb0lEwrtz/kn4yp8oaaQf
+7NXTs4b2Oi/ZOjBzYBzd90ADWBh4/ox2fwIDAQAB
+-----END RSA PUBLIC KEY-----
