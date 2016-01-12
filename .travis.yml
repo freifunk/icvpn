@@ -1,10 +1,16 @@
 language: python
-python: "3.4"
+
+python:
+ - 3.4
+
 before_install:
+  - sudo apt-get update
   - sudo apt-get install iputils-ping checkinstall
   - wget https://www.linuxlounge.net/~martin/icvpn/nmap_6.47-1_amd64.deb
   - sudo dpkg -i nmap_6.47-1_amd64.deb
+
 install:
   - pip install -r .travis_requirements.txt
+
 script:
   - sudo bash -c "source ~/virtualenv/python3.4/bin/activate && scripts/check -s ./hosts/"
