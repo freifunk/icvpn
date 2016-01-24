@@ -175,24 +175,25 @@ def do_checks_host(host):
                         errcnt += 1
 
     output.append("") #we want a linebreak after each host
-    return (errcnt, warncnt, ip4, ip6, output)
+    return dict(errcnt=errcnt, warncnt=warncnt, ip4=ip4, ip6=ip6, output=output)
 
 
 def do_checks(srcdir):
     with concurrent.futures.ProcessPoolExecutor(max_workers=200) as executor:
         def do_reduce_results(first, second):
             linebreak = '{}\n'.format(ANSI_COLOR_RESET)
-            print(linebreak.join(first[4]), end="")
-            print(linebreak.join(second[4]), end="")
-            return (first[0] + second[0], first[1] + second[1], first[2] + second[2], first[3] + second[3], list())
+            print(linebreak.join(first['output']), end="")
+            print(linebreak.join(second['output']), end="")
+            return dict(errcnt=first['errcnt'] + second['errcnt'], warncnt=first['warncnt'] + second['warncnt'],
+                        ip4=first['ip4'] + second['ip4'], ip6=first['ip6'] + second['ip6'], output=list())
 
         results = executor.map(do_checks_host, get_hosts_data(srcdir))
         result = reduce(do_reduce_results, results)
 
-        print("\nfound {}/{} working ipv4/ipv6 peers".format(result[2], result[3]))
-        print("{}{} errors{}".format(ANSI_COLOR_ERR, result[0], ANSI_COLOR_RESET))
-        print("{}{} warnings{}".format(ANSI_COLOR_WARN, result[1], ANSI_COLOR_RESET))
-        return 0 if result[0] == 0 else 1
+        print("\nfound {}/{} working ipv4/ipv6 peers".format(result['ip4'], result['ip6']))
+        print("{}{} errors{}".format(ANSI_COLOR_ERR, result['errcnt'], ANSI_COLOR_RESET))
+        print("{}{} warnings{}".format(ANSI_COLOR_WARN, result['warncnt'], ANSI_COLOR_RESET))
+        return 0 if result['errcnt'] == 0 else 1
 
 
 if __name__ == "__main__":
