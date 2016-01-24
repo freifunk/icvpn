@@ -15,33 +15,31 @@ ANSI_COLOR_OK = "\x1b[32m"
 ANSI_COLOR_RESET = "\x1b[0m"
 
 
-def error(arg):
-    print_to_result(ANSI_COLOR_ERR + " " + arg)
+def error(arg, output):
+    print_to_result(ANSI_COLOR_ERR + " " + arg, output)
 
 
-def warn(arg):
-    print_to_result(ANSI_COLOR_WARN + " " + arg)
+def warn(arg, output):
+    print_to_result(ANSI_COLOR_WARN + " " + arg, output)
 
 
-def ok(arg):
-    print_to_result(ANSI_COLOR_OK + " " + arg)
+def ok(arg, output):
+    print_to_result(ANSI_COLOR_OK + " " + arg, output)
 
 
-def print_to_result(arg):
-    global output
-    output += str(arg)
-    output += '{}\n'.format(ANSI_COLOR_RESET)
+def print_to_result(arg, output):
+    output.append(str(arg))
 
 
-def check_host_lookup(hostname, port):
+def check_host_lookup(hostname, port, output):
     try:
         return socket.getaddrinfo(hostname, port)
     except Exception:
-        error("DNS Lookup for {hostname} failed".format(hostname=hostname))
+        error("DNS Lookup for {hostname} failed".format(hostname=hostname), output)
         return []
 
 
-def check_icmp_reachability(gai_record):
+def check_icmp_reachability(gai_record, output):
     host = gai_record[4][0]
     family = gai_record[0]
 
@@ -53,11 +51,11 @@ def check_icmp_reachability(gai_record):
                              stdout=subprocess.PIPE)
     child.communicate()
     if child.returncode:
-        error("{host} is icmp unreachable".format(host=host))
+        error("{host} is icmp unreachable".format(host=host), output)
     return True if child.returncode == 0 else False
 
 
-def check_udp_reachability(gai_record):
+def check_udp_reachability(gai_record, output):
     global ip4, ip6
 
     host, port = gai_record[4][:2]
@@ -74,10 +72,10 @@ def check_udp_reachability(gai_record):
 
     if state == 'closed':
         error("{host} port {port}/udp is {state}"
-              .format(host=host, port=port, state=state))
+              .format(host=host, port=port, state=state), output)
     else:
         ok("{host} port {port}/udp is {state}"
-           .format(host=host, port=port, state=state))
+           .format(host=host, port=port, state=state), output)
 
         if family is socket.AddressFamily.AF_INET:
             ip4 += 1
@@ -98,6 +96,7 @@ def get_hosts_data(srcdir):
                 ignore_key = False
                 addresses = []
                 port = 655  # tinc default port
+                output = list()
 
                 for line in f.readlines():
 
@@ -117,24 +116,24 @@ def get_hosts_data(srcdir):
                             try:
                                 port = int(v)
                             except ValueError:
-                                error("non-integer default port given")
+                                error("non-integer default port given", output)
                         elif k == "address":
                             if " " in v:
                                 parts = v.split(' ')
                                 if len(parts) != 2:
-                                    error("unknown address format")
+                                    error("unknown address format", output)
                                 try:
                                     int(parts[1])
                                     addresses.append(parts)
                                 except ValueError:
-                                    error("non-integer port given")
+                                    error("non-integer port given", output)
                             else:
                                 addresses.append((v, None))
                         elif k in ('ecdsapublickey', 'ed25519publickey'):
                             continue
                         else:
                             error("unknown key {key} with value {val}"
-                                  .format(key=k, val=v))
+                                  .format(key=k, val=v), output)
 
                 # set explicit port for address/port pairs
                 for i, addr in enumerate(addresses):
@@ -142,27 +141,27 @@ def get_hosts_data(srcdir):
                         item = (addr[0], port)
                         addresses[i] = item
 
-                yield(dict(community=fname, addresses=addresses))
+                yield(dict(community=fname, addresses=addresses, output=output))
 
 
 def do_checks_host(host):
-    global ip4, ip6, output
+    global ip4, ip6
 
     errcnt = 0
     warncnt = 0
     ip4 = 0
     ip6 = 0
-    output = ""
+    output = host['output']
 
-    print_to_result("Checking {community}".format(community=host['community']))
+    print_to_result("Checking {community}".format(community=host['community']), output)
     if not host['addresses']:
-        warn("no addresses specified")
+        warn("no addresses specified", output)
         warncnt += 1
     for address in host['addresses']:
         host, port = address
 
         # dns lookup
-        records = check_host_lookup(host, port)
+        records = check_host_lookup(host, port, output)
         if not records:
             errcnt += 1
         else:
@@ -172,22 +171,24 @@ def do_checks_host(host):
                     # everything else
                     continue
 
-                if not check_icmp_reachability(record):
+                if not check_icmp_reachability(record, output):
                     errcnt += 1
                 else:
-                    port_state = check_udp_reachability(record)
+                    port_state = check_udp_reachability(record, output)
                     if not port_state:
                         errcnt += 1
 
+    output.append("") #we want a linebreak after each host
     return (errcnt, warncnt, ip4, ip6, output)
 
 
 def do_checks(srcdir):
     with concurrent.futures.ProcessPoolExecutor(max_workers=200) as executor:
         def do_reduce_results(first, second):
-            print(first[4], end="")
-            print(second[4], end="")
-            return (first[0] + second[0], first[1] + second[1], first[2] + second[2], first[3] + second[3], "")
+            linebreak = '{}\n'.format(ANSI_COLOR_RESET)
+            print(linebreak.join(first[4]), end="")
+            print(linebreak.join(second[4]), end="")
+            return (first[0] + second[0], first[1] + second[1], first[2] + second[2], first[3] + second[3], list())
 
         results = executor.map(do_checks_host, get_hosts_data(srcdir))
         result = reduce(do_reduce_results, results)
