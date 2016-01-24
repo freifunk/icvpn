@@ -16,21 +16,21 @@ ANSI_COLOR_RESET = "\x1b[0m"
 
 
 def error(arg):
-    printToResult(ANSI_COLOR_ERR + " " + arg)
+    print_to_result(ANSI_COLOR_ERR + " " + arg)
 
 
 def warn(arg):
-    printToResult(ANSI_COLOR_WARN + " " + arg)
+    print_to_result(ANSI_COLOR_WARN + " " + arg)
 
 
 def ok(arg):
-    printToResult(ANSI_COLOR_OK + " " + arg)
+    print_to_result(ANSI_COLOR_OK + " " + arg)
 
 
-def printToResult(arg):
+def print_to_result(arg):
     global output
     output += str(arg)
-    output += '%s\n' % ANSI_COLOR_RESET
+    output += '{}\n'.format(ANSI_COLOR_RESET)
 
 
 def check_host_lookup(hostname, port):
@@ -154,7 +154,7 @@ def do_checks_host(host):
     ip6 = 0
     output = ""
 
-    printToResult("Checking {community}".format(community=host['community']))
+    print_to_result("Checking {community}".format(community=host['community']))
     if not host['addresses']:
         warn("no addresses specified")
         warncnt += 1
@@ -182,14 +182,13 @@ def do_checks_host(host):
     return (errcnt, warncnt, ip4, ip6, output)
 
 
-def do_reduce_results(a, b):
-    print (a[4], end="")
-    print (b[4], end="")
-    return (a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3], "")
-
-
 def do_checks(srcdir):
     with concurrent.futures.ProcessPoolExecutor(max_workers=200) as executor:
+        def do_reduce_results(first, second):
+            print(first[4], end="")
+            print(second[4], end="")
+            return (first[0] + second[0], first[1] + second[1], first[2] + second[2], first[3] + second[3], "")
+
         results = executor.map(do_checks_host, get_hosts_data(srcdir))
         result = reduce(do_reduce_results, results)
 
