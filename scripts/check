@@ -55,9 +55,7 @@ def check_icmp_reachability(gai_record, output):
     return True if child.returncode == 0 else False
 
 
-def check_udp_reachability(gai_record, output):
-    global ip4, ip6
-
+def check_udp_reachability(gai_record, output, ip4, ip6):
     host, port = gai_record[4][:2]
     family = gai_record[0]
 
@@ -82,7 +80,7 @@ def check_udp_reachability(gai_record, output):
         else:
             ip6 += 1
 
-    return False if state == 'closed' else True
+    return (False, ip4, ip6) if state == 'closed' else (True, ip4, ip6)
 
 
 def get_hosts_data(srcdir):
@@ -145,8 +143,6 @@ def get_hosts_data(srcdir):
 
 
 def do_checks_host(host):
-    global ip4, ip6
-
     errcnt = 0
     warncnt = 0
     ip4 = 0
@@ -174,7 +170,7 @@ def do_checks_host(host):
                 if not check_icmp_reachability(record, output):
                     errcnt += 1
                 else:
-                    port_state = check_udp_reachability(record, output)
+                    port_state, ip4, ip6 = check_udp_reachability(record, output, ip4, ip6)
                     if not port_state:
                         errcnt += 1
 
