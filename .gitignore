@@ -2,3 +2,6 @@ tinc.conf
 rsa_key.priv
 tinc-up
 tinc-down
+ed25519_key.priv
+ed25519_key.pub
+rsa_key.pub
