@@ -1,11 +1,13 @@
-Address = gw04.westpfalz.freifunk.net
+Address = bgp4.freifunk-westpfalz.de
 Port = 656
+
 -----BEGIN RSA PUBLIC KEY-----
-MIIBCgKCAQEAym7YQ03dPQYGGtbzHceS6CtvKZrL9PFLfSa9qifKj75XvgoFzbDp
-Uwf49mrz4TPggsrAdZ+O84F/t2+FGrpvypPqR5fereCnEeh/XcioVkXBefCQ0S6S
-fNjsFRRGEpRsU4TSmvQuv0jKR7kDGifUAhQN9lXX0zDRotyxp4V3KYQRzA4ZR7nh
-mnaaKEf02BQBFU9wxisGfXWZiytDO97/PDYwiu/s3Kmi2Nvnzlhsttkj60bexc2G
-CG1rUJTUKNCuoKwhK8jE5NVVbhEBFHKkBe/VodtCjksporDVjYMXKd1RWaeis850
-eC3/KHKv7XJEzkCtPbozz6CO0Ov6L6BzOQIDAQAB
+MIIBCgKCAQEA7/jAgpHsThpIz4/FW5Wgov5rq/Ond13t3aC93YULZCasbQhkcRVd
+gWbitXIhwaTJaDSRI87IP3VR2QvfSSUjUpvHCT7KqzDuFA8ucTRplnSt9bfliyPX
+jlzhJFLLgj+/Y0OqDtjujePNS8caDQPVVOamgwHj9+Wt5YnkkEgmHmv0s7paq7Lm
+Z78Xy6hcelAj6H2c1gqwD37QMP0P0zTUGS6w4PQMdvDzRD+SS781f3ooTHgbUYOv
+bmJx3f9R/prvvBSc6sEaggi3ElCx1wdpSwDsNi4mQ2LVj3rrNgR2MhaXIPF+OKjq
+OM6xkI532AE6eYX7EKfbKusgYpOKlSqOaQIDAQAB
 -----END RSA PUBLIC KEY-----
-Ed25519PublicKey = GSRX94GBH9QLe96AMoxrmqF90V6zrNNryyNk3BKD40F
+
+Ed25519PublicKey = VnzaZ1mYEpFcVWfruaPuyxtv3iE0pOj3GhtWsdrcQiN
