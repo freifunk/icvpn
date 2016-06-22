@@ -1,4 +1,5 @@
 address = vpn02.freifunk-innsbruck.at
+Port = 655
 
 -----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAsyq0v+ZF7im+Ur9zflv8yJ3cd3jSyLsKHk+2RIvOi8Ynh9MN3+Lj
