@@ -1,0 +1,11 @@
+Address = vpn01.freifunk-vogtland.net
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAyWbsVqejM8wO6F+oIA9+vMYK44fTLktkNDO97r2ahd0J3krzeKHe
+BwFQX1KTac+7HSoruHTS/mrTwJvrOD2VF6DVpntpAJU0Za5LefY16X7AeuYPWJz6
+pYMxqw3Zw1rkU8+SVuAqFjwxH94Au+amBw4ZEcsmR4rhjywZ+1bmrUtpHqIn/ial
+udDhAWGfVZ6qG+rZCiR76UR8AxuvzVDgNU6U7lAmMO6+k//t+Forx1UcpyuePXyt
+7xtpmIS5JZ5TiSBxxQud+eaq+gI3aQG+6Gp4A0l4sJ1MK21ksyL6V+9NjmsfR5bF
+SLT7VuuK9KbC4IX0MKpfoC/D0RHXRtN5YwIDAQAB
+-----END RSA PUBLIC KEY-----
