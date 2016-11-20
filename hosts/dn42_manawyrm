@@ -1,0 +1,18 @@
+Address = dn42.tbspace.de
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIICCgKCAgEAq1lF4c6x4BJXOrXCt4TsaePanx+by43dI2hO5Bvcseke+a6WO2Iv
+PK8gTXm1JxcBRbKeQk3ihW6sy4DHa1uWv/yg8Eflu+lG9hPMcUa8adG+8q7Fukju
+cC/ItcN6yrZbDGMoP4VyRuNgOo1jT7nZEL38ncda5ihcy2yLcfVByLPuqv6V6xdU
+Jc1Ca6iVOOxae8vhyr9BCyAKfC9GWLF2rr1N4olokvEzuzi46cai6xKNw6/yefiA
+NwraVNViy/e1/8baGfKgzd1PwxWDegiRQ5QnrJ/adETZJ0lUqLtE7pxZE3QqLe/g
+/P22eZR78ikkcMwQ97hRjxPFlrC24QZNS2eeFHv1jqaF8BA9zNgy6FDdPwy4sHa0
+nSM2FpaaYE9PoyMgOR3LRnTm2zYTy7V7VoEMGWKJAL6gBfifM97txIMNS60pWw5s
+5LBBkvCeM6UcnM4zgFrbqVL30iL4f1fmLc0witUOLwelya72xEV/8bgws8imzmFi
+9PRpSxnERfpfMJeWpLVF6hU1E3bg86uezMdf5mhONYkFESLKoyD3ogwAhcLRlDMg
+bdBaIdfj3L4AaDe2cD8SOJXSGSoCRoKVhqwtEMxcwTjqwuKzTc7VaDvz32k28Rw6
+uMdsoM+YJWsYgqtxoe6xCZzY+E5gb9ZH7/zJAOkSPX7+n0ZxarGtnmECAwEAAQ==
+-----END RSA PUBLIC KEY-----
+
+Ed25519PublicKey = TQHsbCLZD4NZ015eddrgo+0rSxqX5j4z3R94w/I9u1J
