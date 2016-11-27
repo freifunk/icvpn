@@ -1,5 +1,5 @@
-Address = vpn.ddmesh.de
-Port = 656
+Address = icvpn1.freifunk-dresden.de
+Port = 655
 -----BEGIN RSA PUBLIC KEY-----
 MIGJAoGBANpfSvLAUcixOY3HJTUim57bJEhX85qEVO89nxfkE0YKUii1mSj0F7R4
 dqgCySagEgvYeYWPISgvyzIhRP2xvkefGG0ev72bSVjFoZWg6mcinZ/y9rIkbSY2
