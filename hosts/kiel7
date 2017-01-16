@@ -1,4 +1,5 @@
 Address = vpn7.freifunk.in-kiel.de
+Port = 656
 
 -----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEA0VKqx0/RkP4T7AMPK/CMP6DjJlsEFWf7WxLroD829Xm23L0PHKU+
