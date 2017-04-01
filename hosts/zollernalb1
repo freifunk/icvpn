@@ -1,0 +1,11 @@
+Address = bgp1.ffza.systemhaus-lebherz.de
+Port = 656
+
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAzDxhvEecvBqNWkk2HyBxW4mXz/WhYicDNDrBvX4k+mTO7QdHP8ED
+G+m3+E7XebNhrdtrukpcKsIHj5TsFaFvn2KKVgrkfgSScop9t9oeCVD4t4N7CDpb
+C0WzgrCdQ8x7SeW4opgTukV6Wa/Eu32byXdv//ATDEVJfILsWmI90Bl6n54qDKCn
+9j09NficMpQ+XkVX0ztKypMDaLn6IQjB4v6OeiwIrWMfI8+IV0QD/t7lR3/tqTAf
+lkCjnL1K85vpdOp9R45KxSn9NZ88MABqFeBMiTlBTbn9TzdsquQ+V/5Bny67+meA
+jXRdsgSz2UpEkgtEtx78Z+c0aLD86kcgwQIDAQAB
+-----END RSA PUBLIC KEY-----
