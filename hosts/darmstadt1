@@ -1,6 +1,6 @@
 Address = icvpn1.darmstadt.freifunk.net
-Ed25519PublicKey = w/9Nr85PRD6Io6szD7pkVOHQBSIBzUGFw6dwFwokb1D
 Port = 655
+Ed25519PublicKey = w/9Nr85PRD6Io6szD7pkVOHQBSIBzUGFw6dwFwokb1D
 -----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAz1AeVU4j2bS+kPYCDbYuNaasX4gxiv5mrbtYu04Frgsc5K0Ps4u9
 igUXNe0/Lk1CM/hatL6ZiKlxf0Xko2eKgffq7nBg7pOWehXbhbXPgcqF8WcmpC9X
@@ -9,4 +9,3 @@ f/ZM/Vjh0XrJNJATqg8ORPUUadotcMMhgjKO1/oNqhCtZFwgBPa54MZiP+j115qM
 HZ0lIePrYgkiAS7p8Kz4eWEB8WIGVVDIICBJtdcumGPP9veE5ZR5zgdVsLTS+bZg
 Z42/NVFU5Nhe4qhxBUXMsDyrCdbZO7EZCwIDAQAB
 -----END RSA PUBLIC KEY-----
-
