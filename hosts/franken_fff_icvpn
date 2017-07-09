@@ -1,4 +1,6 @@
-Address = ro1.freifunk-franken.de
+Address = fff-icvpn.fff.community
+Port = 656
+
 -----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAr/WWAqwOnBgeeOroxLE/rQRXlyHElUTJzR6C55VFAgRX9VEWsG3A
 OLoCQOIf5YdNTtefYRosZtEDNbB/fOl3+TOlHg1fk2M7OZpiT36MVT16MEU1+AwT
