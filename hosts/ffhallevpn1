@@ -1,8 +1,0 @@
-Address = vpn1.freifunk-halle.de
-# Address = 88.198.51.136
-Port = 655
------BEGIN RSA PUBLIC KEY-----
-MIGJAoGBALF/Wu4pe+f3dHeLYApHxUnOGUBzpNREUet6nDp80uWT/dph7h6Yqtz2
-XMkifjDjSDnHPa1l1LwWFXkTKVQLH4lUrDuadXMU+BSEJWO36vg/A9E3AjbzoTA7
-RY6Gzx+FOXqTGOtqzEPMLkBGTrslerpw9JzfCgLlxLLCXg8Tri8ZAgMBAAE=
------END RSA PUBLIC KEY-----
