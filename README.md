@@ -68,7 +68,7 @@ indirect routing is possible the meta nodes are not required to provide forwardi
 
 The maintainers can be reached at
 - [icvpn@lists.funkfeuer.at](mailto:icvpn@lists.funkfeuer.at)
-- [irc.hackint.org #icvpn](irc://irc.hackint.org/icvpn) ([Webchat](https://webirc.hackint.org/#icvpn))
+- [irc.hackint.org #icvpn](irc://irc.hackint.org/icvpn) ([Webchat](https://webirc.hackint.org/#ircs://irc.hackint.org/#icvpn))
 
 We have set up IRC notifications for all repositories concerning the icvpn network.
 
