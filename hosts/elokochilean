@@ -1,4 +1,5 @@
-Address = 10.207.7.8
+Address = tinc.eloko.review
+Port = 655
 -----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAvfi+d6bsFHRmySq46vygyPnLJiO892JGg8HXtRmWz5wkQsKP8Xo8
 YIXYQNDmfURoeuyyiAAi8W+5oi8u1PZW3MJhVRqjDJLT3qj8YcpBDv9+KmsbfzEN
