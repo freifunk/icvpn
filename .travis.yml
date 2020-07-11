@@ -5,9 +5,7 @@ python:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install iputils-ping checkinstall
-  - wget https://www.linuxlounge.net/~martin/icvpn/nmap_6.47-1_amd64.deb
-  - sudo dpkg -i nmap_6.47-1_amd64.deb
+  - sudo apt-get install iputils-ping checkinstall nmap
 
 install:
   - pip install -r .travis_requirements.txt
