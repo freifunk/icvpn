@@ -5,10 +5,9 @@ import os
 import socket
 import subprocess
 import nmap
+import concurrent.futures
 from optparse import OptionParser
-
-ip4, ip6 = 0, 0
-
+from functools import reduce
 
 ANSI_COLOR_ERR = "\x1b[31m"
 ANSI_COLOR_WARN = "\x1b[33m"
@@ -16,30 +15,31 @@ ANSI_COLOR_OK = "\x1b[32m"
 ANSI_COLOR_RESET = "\x1b[0m"
 
 
-def error(*arg):
-    print(ANSI_COLOR_ERR, *arg, file=sys.stderr,
-          end='%s\n' % ANSI_COLOR_RESET)
+def error(arg, output):
+    print_to_result(ANSI_COLOR_ERR + " " + arg, output)
 
 
-def warn(*arg):
-    print(ANSI_COLOR_WARN, *arg, file=sys.stderr,
-          end='%s\n' % ANSI_COLOR_RESET)
+def warn(arg, output):
+    print_to_result(ANSI_COLOR_WARN + " " + arg, output)
 
 
-def ok(*arg):
-    print(ANSI_COLOR_OK, *arg, file=sys.stderr,
-          end='%s\n' % ANSI_COLOR_RESET)
+def ok(arg, output):
+    print_to_result(ANSI_COLOR_OK + " " + arg, output)
 
 
-def check_host_lookup(hostname, port):
+def print_to_result(arg, output):
+    output.append(str(arg))
+
+
+def check_host_lookup(hostname, port, output):
     try:
         return socket.getaddrinfo(hostname, port)
     except Exception:
-        error("DNS Lookup for {hostname} failed".format(hostname=hostname))
+        error("DNS Lookup for {hostname} failed".format(hostname=hostname), output)
         return []
 
 
-def check_icmp_reachability(gai_record):
+def check_icmp_reachability(gai_record, output):
     host = gai_record[4][0]
     family = gai_record[0]
 
@@ -51,13 +51,11 @@ def check_icmp_reachability(gai_record):
                              stdout=subprocess.PIPE)
     child.communicate()
     if child.returncode:
-        error("{host} is icmp unreachable".format(host=host))
+        error("{host} is icmp unreachable".format(host=host), output)
     return True if child.returncode == 0 else False
 
 
-def check_udp_reachability(gai_record):
-    global ip4, ip6
-
+def check_udp_reachability(gai_record, output, ip4, ip6):
     host, port = gai_record[4][:2]
     family = gai_record[0]
 
@@ -72,17 +70,17 @@ def check_udp_reachability(gai_record):
 
     if state == 'closed':
         error("{host} port {port}/udp is {state}"
-              .format(host=host, port=port, state=state))
+              .format(host=host, port=port, state=state), output)
     else:
         ok("{host} port {port}/udp is {state}"
-           .format(host=host, port=port, state=state))
+           .format(host=host, port=port, state=state), output)
 
         if family is socket.AddressFamily.AF_INET:
             ip4 += 1
         else:
             ip6 += 1
 
-    return False if state == 'closed' else True
+    return (False, ip4, ip6) if state == 'closed' else (True, ip4, ip6)
 
 
 def get_hosts_data(srcdir):
@@ -96,6 +94,7 @@ def get_hosts_data(srcdir):
                 ignore_key = False
                 addresses = []
                 port = 655  # tinc default port
+                output = list()
 
                 for line in f.readlines():
 
@@ -115,24 +114,24 @@ def get_hosts_data(srcdir):
                             try:
                                 port = int(v)
                             except ValueError:
-                                error("non-integer default port given")
+                                error("non-integer default port given", output)
                         elif k == "address":
                             if " " in v:
                                 parts = v.split(' ')
                                 if len(parts) != 2:
-                                    error("unknown address format")
+                                    error("unknown address format", output)
                                 try:
                                     int(parts[1])
                                     addresses.append(parts)
                                 except ValueError:
-                                    error("non-integer port given")
+                                    error("non-integer port given", output)
                             else:
                                 addresses.append((v, None))
                         elif k in ('ecdsapublickey', 'ed25519publickey'):
                             continue
                         else:
                             error("unknown key {key} with value {val}"
-                                  .format(key=k, val=v))
+                                  .format(key=k, val=v), output)
 
                 # set explicit port for address/port pairs
                 for i, addr in enumerate(addresses):
@@ -140,47 +139,61 @@ def get_hosts_data(srcdir):
                         item = (addr[0], port)
                         addresses[i] = item
 
-                yield(dict(community=fname, addresses=addresses))
+                yield(dict(community=fname, addresses=addresses, output=output))
+
+
+def do_checks_host(host):
+    errcnt = 0
+    warncnt = 0
+    ip4 = 0
+    ip6 = 0
+    output = host['output']
+
+    print_to_result("Checking {community}".format(community=host['community']), output)
+    if not host['addresses']:
+        warn("no addresses specified", output)
+        warncnt += 1
+    for address in host['addresses']:
+        host, port = address
+
+        # dns lookup
+        records = check_host_lookup(host, port, output)
+        if not records:
+            errcnt += 1
+        else:
+            for record in records:
+                if record[1] is not socket.SOCK_DGRAM:
+                    # vpn connections are udp based, so skip
+                    # everything else
+                    continue
+
+                if not check_icmp_reachability(record, output):
+                    errcnt += 1
+                else:
+                    port_state, ip4, ip6 = check_udp_reachability(record, output, ip4, ip6)
+                    if not port_state:
+                        errcnt += 1
+
+    output.append("") #we want a linebreak after each host
+    return dict(errcnt=errcnt, warncnt=warncnt, ip4=ip4, ip6=ip6, output=output)
 
 
 def do_checks(srcdir):
-    global ip4, ip6
+    with concurrent.futures.ProcessPoolExecutor(max_workers=200) as executor:
+        def do_reduce_results(first, second):
+            linebreak = '{}\n'.format(ANSI_COLOR_RESET)
+            print(linebreak.join(first['output']), end="")
+            print(linebreak.join(second['output']), end="")
+            return dict(errcnt=first['errcnt'] + second['errcnt'], warncnt=first['warncnt'] + second['warncnt'],
+                        ip4=first['ip4'] + second['ip4'], ip6=first['ip6'] + second['ip6'], output=list())
 
-    errcnt = 0
-    warncnt = 0
+        results = executor.map(do_checks_host, get_hosts_data(srcdir))
+        result = reduce(do_reduce_results, results)
 
-    for host in get_hosts_data(srcdir):
-        print("Checking {community}".format(community=host['community']))
-        if not host['addresses']:
-            warn("no addresses specified")
-            warncnt += 1
-        for address in host['addresses']:
-            host, port = address
-
-            # dns lookup
-            records = check_host_lookup(host, port)
-            if not records:
-                errcnt += 1
-            else:
-                for record in records:
-                    if record[1] is not socket.SOCK_DGRAM:
-                        # vpn connections are udp based, so skip
-                        # everything else
-                        continue
-
-                    if not check_icmp_reachability(record):
-                        errcnt += 1
-                    else:
-                        port_state = check_udp_reachability(record)
-                        if not port_state:
-                            errcnt += 1
-
-    print("\nfound {}/{} working ipv4/ipv6 peers".format(ip4, ip6))
-
-    error("{} errors".format(errcnt))
-    warn("{} warnings".format(warncnt))
-
-    return 0 if errcnt == 0 else 1
+        print("\nfound {}/{} working ipv4/ipv6 peers".format(result['ip4'], result['ip6']))
+        print("{}{} errors{}".format(ANSI_COLOR_ERR, result['errcnt'], ANSI_COLOR_RESET))
+        print("{}{} warnings{}".format(ANSI_COLOR_WARN, result['warncnt'], ANSI_COLOR_RESET))
+        return 0 if result['errcnt'] == 0 else 1
 
 
 if __name__ == "__main__":
